@@ -64,50 +64,50 @@
 (setq uniquify-buffer-name-style 'reverse)
 
 ; helm
-(require 'helm)
-(require 'helm-config)
+;(require 'helm)
+;(require 'helm-config)
 
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+;(global-set-key (kbd "C-c h") 'helm-command-prefix)
+;(global-unset-key (kbd "C-x c"))
 
 ; some recommended keymappings
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "C-c o") 'helm-occur)
+;(global-set-key (kbd "M-x") 'helm-M-x)
+;(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;(global-set-key (kbd "C-x b") 'helm-mini)
+;(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;(global-set-key (kbd "C-c o") 'helm-occur)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
 ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+;(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
 ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action)
+;(define-key helm-map (kbd "C-z")  'helm-select-action)
 ; list actions using C-z
 
 ; change some default executables for use in helm
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
-(when (executable-find "ack-grep")
-  (setq helm-grep-default-command "ack-grep -Hn --nogroup %p %f"
-        helm-grep-default-recurse-command "ack-grep -H --nogroup %e %p %f"))
+;(when (executable-find "curl")
+;  (setq helm-google-suggest-use-curl-p t))
+;(when (executable-find "ack-grep")
+;  (setq helm-grep-default-command "ack-grep -Hn --nogroup %p %f"
+;        helm-grep-default-recurse-command "ack-grep -H --nogroup %e %p %f"))
 
-(setq helm-split-window-in-side-p           t
-      helm-move-to-line-cycle-in-source     t
-      helm-ff-search-library-in-sexp        t
-      helm-scroll-amount                    8
-      helm-ff-file-name-history-use-recentf t)
+;(setq helm-split-window-in-side-p           t
+;      helm-move-to-line-cycle-in-source     t
+;      helm-ff-search-library-in-sexp        t
+;      helm-scroll-amount                    8
+;      helm-ff-file-name-history-use-recentf t)
 
-(helm-mode 1)
+;(helm-mode 1)
 
 ;; Python configuration
 
 ; virtualenvwrapper
-(require 'virtualenvwrapper)
+;(require 'virtualenvwrapper)
 ;(venv-initialize-interactive-shells) ;; if you want interactive shell support
 ; (venv-initialize-eshell) ;; if you want eshell support
-(setq venv-location "~/miniconda/envs")
-(venv-workon) ; prompts for venv when starting emacs
-(setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format)) ; puts current virtualenv on the mode line
+;(setq venv-location "~/miniconda/envs")
+;(venv-workon) ; prompts for venv when starting emacs
+;(setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format)) ; puts current virtualenv on the mode line
 ;(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
 ;(defun restart-jedi-server-venv ()
 ;  "restarts the jedi server after switching virtualenvs"
@@ -118,19 +118,19 @@
 ; the problem is that jedi:server-command doesn't want a string, it wants
 ; a list containing a string
 ;; Jedi
-(setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
-(defun jedi:buffer-local-setup ()
-  "allows which jedi server you start to be buffer local"
-  (let ((cmds (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) ""))))
-    (when cmds (set (make-local-variable 'jedi:server-command) cmds))))
+;(setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
+;(defun jedi:buffer-local-setup ()
+;  "allows which jedi server you start to be buffer local"
+;  (let ((cmds (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) ""))))
+;    (when cmds (set (make-local-variable 'jedi:server-command) cmds))))
 
-(add-hook 'python-mode-hook 'jedi:buffer-local-setup)
-(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
-(defun venv-restart-jedi-server ()
-  "restarts the jedi server after switching virtualenvs"
-  (when (featurep `jedi)
-    (jedi:buffer-local-setup)))
-(add-hook 'venv-postactivate-hook 'venv-restart-jedi-server)
+;(add-hook 'python-mode-hook 'jedi:buffer-local-setup)
+;(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
+;(defun venv-restart-jedi-server ()
+;  "restarts the jedi server after switching virtualenvs"
+;  (when (featurep `jedi)
+;    (jedi:buffer-local-setup)))
+;(add-hook 'venv-postactivate-hook 'venv-restart-jedi-server)
 
 ;(setq jedi:server-command '("~/Anaconda/envs/sim_decon/lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py"))
 
