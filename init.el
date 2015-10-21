@@ -102,11 +102,11 @@
 ;; Python configuration
 
 ; virtualenvwrapper
-;(require 'virtualenvwrapper)
+(require 'virtualenvwrapper)
 ;(venv-initialize-interactive-shells) ;; if you want interactive shell support
 ; (venv-initialize-eshell) ;; if you want eshell support
-;(setq venv-location "~/miniconda/envs")
-;(venv-workon) ; prompts for venv when starting emacs
+(setq venv-location "~/miniconda/envs")
+(venv-workon) ; prompts for venv when starting emacs
 ;(setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format)) ; puts current virtualenv on the mode line
 ;(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
 ;(defun restart-jedi-server-venv ()
