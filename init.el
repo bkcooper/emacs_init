@@ -49,7 +49,7 @@
 ;; specific packages
 
 ; org-mode setup
-(setq org-directory (expand-file-name "~/org/"))
+(setq org-directory (expand-file-name "~/Google Drive/org/"))
 (setq org-default-notes-file (concat org-directory "/capture.org"))
 (setq org-log-done `time)
 ;(setq org-journal-directory (expand-file-name "~/org/journal/"))
@@ -188,6 +188,3 @@
 ;; Julia configuration
 (eval-after-load 'julia-mode
   '(define-key julia-mode-map (kbd "C-c C-p") 'inferior-julia))
-
-
-
