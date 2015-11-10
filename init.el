@@ -118,19 +118,22 @@
 ; the problem is that jedi:server-command doesn't want a string, it wants
 ; a list containing a string
 ;; Jedi
-;(setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
-;(defun jedi:buffer-local-setup ()
-;  "allows which jedi server you start to be buffer local"
-;  (let ((cmds (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) ""))))
-;    (when cmds (set (make-local-variable 'jedi:server-command) cmds))))
+(setq jedi:complete-on-dot t)
+(setq jedi:use-shortcuts t)
+(setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
+(defun jedi:buffer-local-setup ()
+  "allows which jedi server you start to be buffer local"
+  (let ((cmds (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) ""))))
+    (when cmds (set (make-local-variable 'jedi:server-command) cmds))))
 
-;(add-hook 'python-mode-hook 'jedi:buffer-local-setup)
-;(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
-;(defun venv-restart-jedi-server ()
-;  "restarts the jedi server after switching virtualenvs"
-;  (when (featurep `jedi)
-;    (jedi:buffer-local-setup)))
-;(add-hook 'venv-postactivate-hook 'venv-restart-jedi-server)
+(add-hook 'python-mode-hook 'jedi:buffer-local-setup)
+(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
+(defun venv-restart-jedi-server ()
+  "restarts the jedi server after switching virtualenvs"
+  (when (featurep `jedi)
+    (jedi:buffer-local-setup)))
+(add-hook 'venv-postactivate-hook 'venv-restart-jedi-server)
 
 ;(setq jedi:server-command '("~/Anaconda/envs/sim_decon/lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py"))
 
