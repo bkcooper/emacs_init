@@ -40,7 +40,7 @@
 (global-set-key (kbd "M-/") 'hippie-expand) ; ropemode overrides
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
-(global-set-key (kdb "C-x g") 'magit-status)
+(global-set-key (kbd "C-x g") 'magit-status)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -99,6 +99,13 @@
       helm-ff-file-name-history-use-recentf t)
 
 (helm-mode 1)
+
+;;LaTeX configuration
+(setq latex-run-command "pdflatex")
+(add-hook 'latex-mode-hook 'flycheck-mode)
+(defun set-checker-to-lacheck ()
+  (setq flycheck-checker 'tex-lacheck))
+(add-hook 'latex-mode-hook 'set-checker-to-lacheck)
 
 ;; Python configuration
 
