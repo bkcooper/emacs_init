@@ -3,23 +3,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(custom-safe-themes
+   (quote
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "White" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "nil" :family "Source Code Pro"))))
- '(font-lock-comment-face ((((class color) (min-colors 88) (background light)) (:foreground "red"))))
- '(font-lock-keyword-face ((((class color) (min-colors 88) (background light)) (:foreground "dark orange"))))
- '(font-lock-string-face ((((class color) (min-colors 88) (background light)) (:foreground "green3"))))
- '(font-lock-variable-name-face ((t (:foreground "black")))))
+ '(default ((t (:inherit nil :stipple nil :background "#fdf6e3" :foreground "#657b83" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "nil" :family "Source Code Pro")))))
 
 ;; general setup
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (package-initialize)
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
+
 
 ; set default frame sizes
 (add-to-list 'default-frame-alist '(height . 50))
@@ -196,3 +195,4 @@
 ;; Julia configuration
 (eval-after-load 'julia-mode
   '(define-key julia-mode-map (kbd "C-c C-p") 'inferior-julia))
+
