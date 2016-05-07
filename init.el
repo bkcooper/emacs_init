@@ -52,8 +52,8 @@
 (setq org-directory (expand-file-name "~/Google Drive/org/"))
 (setq org-default-notes-file (concat org-directory "/capture.org"))
 (setq org-log-done `time)
-;(setq org-journal-directory (expand-file-name "~/org/journal/"))
-;(require 'org-journal)
+(setq org-todo-keywords
+      `((sequence "TODO" "THINKING" "DOING" "CONSULT" "|" "DONE" "CANCELLED" "HANDED OFF")))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
@@ -110,20 +110,9 @@
 
 ; virtualenvwrapper
 (require 'virtualenvwrapper)
-;(venv-initialize-interactive-shells) ;; if you want interactive shell support
-; (venv-initialize-eshell) ;; if you want eshell support
 (setq venv-location "~/miniconda/envs")
 (venv-workon) ; prompts for venv when starting emacs
-;(setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format)) ; puts current virtualenv on the mode line
-;(add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
-;(defun restart-jedi-server-venv ()
-;  "restarts the jedi server after switching virtualenvs"
-;  (when (featurep `jedi)
-;    (setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
-;    (setq jedi:server-command (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) "")))))
-;(add-hook 'venv-postactivate-hook 'restart-jedi-server-venv)
-; the problem is that jedi:server-command doesn't want a string, it wants
-; a list containing a string
+
 ;; Jedi
 (setq jedi:complete-on-dot t)
 (setq jedi:use-shortcuts t)
@@ -142,25 +131,12 @@
     (jedi:buffer-local-setup)))
 (add-hook 'venv-postactivate-hook 'venv-restart-jedi-server)
 
-;(setq jedi:server-command '("~/Anaconda/envs/sim_decon/lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py"))
-
 ;; make IPython what we run with run-python, C-c C-p in python mode
 (setq python-shell-interpreter "ipython"
-  python-shell-interpreter-args ""
-  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-;; the following use IPython's completer, but I'd like to see about jedi
-;;  python-shell-completion-setup-code
-;;    "from IPython.core.completerlib import module_completion"
-;;  python-shell-completion-module-string-code
-;;    "';'.join(module_completion('''%s'''))\n"
-;;  python-shell-completion-string-code
-;;   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+  python-shell-interpreter-args "-i")
 (defun ipython-set-python-indent-offset ()
   (setq python-indent-offset 4))
 (add-hook 'inferior-python-mode-hook 'ipython-set-python-indent-offset)
-
-
 
 ;; handle indenting on new lines, set up flycheck with flake8,
 ;; clean whitespace on save
@@ -171,18 +147,11 @@
 (defun set-checker-to-flake8 ()
   (setq flycheck-checker 'python-flake8))
 (add-hook 'python-mode-hook 'set-checker-to-flake8)
-;(defun start-ropemacs ()
-;  (pymacs-load "ropemacs" "rope-"))
-;(add-hook 'python-mode-hook 'start-ropemacs)
 (defun clean-whitespace-on-save ()
   (add-hook 'before-save-hook 'delete-trailing-whitespace))
 (add-hook 'python-mode-hook 'clean-whitespace-on-save)
 
 ;;; C configuration
-
-;; cscope
-;(require 'xcscope)
-;(cscope-setup)
 
 ;; flycheck with clang
 (setq c-default-style "python"
@@ -195,4 +164,3 @@
 ;; Julia configuration
 (eval-after-load 'julia-mode
   '(define-key julia-mode-map (kbd "C-c C-p") 'inferior-julia))
-
