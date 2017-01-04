@@ -66,6 +66,7 @@
 ; helm
 (require 'helm)
 (require 'helm-config)
+(require 'helm-ag)
 
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
@@ -98,6 +99,7 @@
       helm-ff-file-name-history-use-recentf t)
 
 (helm-mode 1)
+(setq helm-ag-insert-at-point 'symbol)
 
 ;;LaTeX configuration
 (setq latex-run-command "pdflatex")
@@ -116,13 +118,8 @@
 ;; Jedi
 (setq jedi:complete-on-dot t)
 (setq jedi:use-shortcuts t)
-(setq jedi-server-file-suffix "lib/python2.7/site-packages/jediepcserver-0.0.0-py2.7.egg/jediepcserver.py")
-(defun jedi:buffer-local-setup ()
-  "allows which jedi server you start to be buffer local"
-  (let ((cmds (list (mapconcat 'symbol-value '(venv-current-dir jedi-server-file-suffix) ""))))
-    (when cmds (set (make-local-variable 'jedi:server-command) cmds))))
-
-(add-hook 'python-mode-hook 'jedi:buffer-local-setup)
+; install jediepcserver.py in bin directory of each conda env
+(setq jedi:server-command '("jediepcserver.py"))
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
 (defun venv-restart-jedi-server ()
