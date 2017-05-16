@@ -100,6 +100,7 @@
 
 (helm-mode 1)
 (setq helm-ag-insert-at-point 'symbol)
+(setq helm-bibtex-bibliography '("/Users/bencooper/google_drive/Papers/bkc_references.bib"))
 
 ;;LaTeX configuration
 (setq latex-run-command "pdflatex")
@@ -161,3 +162,43 @@
 ;; Julia configuration
 (eval-after-load 'julia-mode
   '(define-key julia-mode-map (kbd "C-c C-p") 'inferior-julia))
+
+;; HTML stuff
+(defun wrap-p-tag ()
+  "Add a tag to beginning and ending of current word or text selection."
+  (interactive)
+  (let (p1 p2 inputText)
+    (if (use-region-p)
+        (progn
+          (setq p1 (region-beginning) )
+          (setq p2 (region-end) )
+          )
+      (let ((bds (bounds-of-thing-at-point 'symbol)))
+        (setq p1 (car bds) )
+        (setq p2 (cdr bds) ) ) )
+
+    (goto-char p2)
+    (delete-backward-char 1)
+    (insert "</p>")
+    (newline)
+    (goto-char p1)
+    (insert "<p>")
+    ))
+
+(defun insert-andy-figure-template (fignum)
+  "Set up skeleton for figure"
+  (interactive "nFigure number: ")
+  (let ()
+    (insert "<figure id=\"Figure_" (number-to-string fignum) "\">")
+    (newline)
+    (insert "<img src=\"./images/figure_" (number-to-string fignum) "/\" alt=\"Figure " (number-to-string fignum) "\" id=\"Figure_" (number-to-string fignum) "_image\">")
+    (newline)
+    (insert "<figcaption><strong>Figure " (number-to-string fignum) ": </strong> </figcaption>")
+    (newline)
+    (insert "</figure><p></p>")
+    ))
+
+(add-hook 'html-mode-hook
+	  (lambda () (let ()
+		       (local-set-key (kbd "C-c RET") #'wrap-p-tag)
+		       (local-set-key (kbd "C-c f") #'insert-andy-figure-template))))
