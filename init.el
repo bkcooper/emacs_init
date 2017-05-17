@@ -100,7 +100,8 @@
 
 (helm-mode 1)
 (setq helm-ag-insert-at-point 'symbol)
-(setq helm-bibtex-bibliography '("/Users/bencooper/google_drive/Papers/bkc_references.bib"))
+(setq bibtex-completion-bibliography '("/Users/bencooper/google_drive/Papers/bkc_references.bib"
+				       "/Users/bencooper/google_drive/Papers/test.bib"))
 
 ;;LaTeX configuration
 (setq latex-run-command "pdflatex")
@@ -201,4 +202,130 @@
 (add-hook 'html-mode-hook
 	  (lambda () (let ()
 		       (local-set-key (kbd "C-c RET") #'wrap-p-tag)
-		       (local-set-key (kbd "C-c f") #'insert-andy-figure-template))))
+		       (local-set-key (kbd "C-c f") #'insert-andy-figure-template)
+		       (local-set-key (kbd "C-c r") #'helm-bibtex))))
+
+;; custom reference format for helm-bibtex
+;; if you run into problems here, require 's, possibly 'cl-lib
+(require 'helm-bibtex)
+(defun bibtex-completion-insert-bkc-reference (keys)
+  "Insert a reference for each selected entry."
+  (let* ((refs (--map
+                (s-word-wrap fill-column
+                             (concat "\n" (bibtex-completion-bkc-format-reference it)))
+                keys)))
+    (insert "\n" (s-join "\n" refs) "\n")))
+
+(defun bibtex-completion-bkc-format-reference (key)
+  "Returns a plain text reference in APA format for the
+publication specified by KEY."
+  (let*
+   ((entry (bibtex-completion-get-entry key))
+    (ref (pcase (downcase (bibtex-completion-get-value "=type=" entry))
+           ("article"
+            (s-format
+	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${journal}, <b>${volume}</b>, ${pages} (${year}). doi:${doi}.\"> </a>"	     
+             'bibtex-completion-bkc-get-value entry))
+           ("inproceedings"
+            (s-format
+	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${booktitle}, ${pages} (${year}). doi:${doi}.\"> </a>"	     
+             'bibtex-completion-bkc-get-value entry))
+           ("book"
+            (s-format
+	     "<a class=\"citation\" href=\"http://\" title=\"${title}. ${author}. ${publisher} (${year}). ISBN: ${isbn}.\"> </a>"	     	     
+             'bibtex-completion-bkc-get-value entry))
+           ("phdthesis"
+            (s-format
+             "${author} (${year}). ${title} (Doctoral dissertation). ${school}, ${address}."
+             'bibtex-completion-bkc-get-value entry))
+           ("inbook"
+            (s-format
+             "${author} (${year}). ${title}. In ${editor} (Eds.), ${booktitle} (pp. ${pages}). ${address}: ${publisher}."
+             'bibtex-completion-bkc-get-value entry))
+           ("incollection"
+            (s-format
+             "${author} (${year}). ${title}. In ${editor} (Eds.), ${booktitle} (pp. ${pages}). ${address}: ${publisher}."
+             'bibtex-completion-bkc-get-value entry))
+           ("proceedings"
+            (s-format
+             "${editor} (Eds.). (${year}). ${booktitle}. ${address}: ${publisher}."
+             'bibtex-completion-bkc-get-value entry))
+           ("unpublished"
+            (s-format
+             "${author} (${year}). ${title}. Unpublished manuscript."
+             'bibtex-completion-bkc-get-value entry))
+           (_
+            (s-format
+             "${author} (${year}). ${title}."
+             'bibtex-completion-bkc-get-value entry)))))
+   (replace-regexp-in-string "\\([.?!]\\)\\." "\\1" ref))) ; Avoid sequences of punctuation marks.
+
+(defun bibtex-completion-bkc-get-value (field entry &optional default)
+  "Return FIELD or ENTRY formatted following the APA
+guidelines.  Return DEFAULT if FIELD is not present in ENTRY."
+  (let ((value (bibtex-completion-get-value field entry))
+        (entry-type (bibtex-completion-get-value "=type=" entry)))
+    (if value
+       (pcase field
+         ;; https://owl.english.purdue.edu/owl/resource/560/06/
+         ("author" (bibtex-completion-bkc-format-authors value))
+         ("editor"
+          (if (string= entry-type "proceedings")
+              (bibtex-completion-apa-format-editors value)
+            (bibtex-completion-apa-format-editors value)))
+         ;; When referring to books, chapters, articles, or Web pages,
+         ;; capitalize only the first letter of the first word of a
+         ;; title and subtitle, the first word after a colon or a dash
+         ;; in the title, and proper nouns. Do not capitalize the first
+         ;; letter of the second word in a hyphenated compound word.
+         ("title" (replace-regexp-in-string ; remove braces
+                   "[{}]"
+                   ""
+                    (replace-regexp-in-string ; upcase initial letter
+                    "^[[:alpha:]]"
+                    'upcase
+                    (replace-regexp-in-string ; preserve stuff in braces from being downcased
+                     "\\(^[^{]*{\\)\\|\\(}[^{]*{\\)\\|\\(}.*$\\)\\|\\(^[^{}]*$\\)"
+                     (lambda (x) (downcase (s-replace "\\" "\\\\" x)))
+                     value))))
+         ("booktitle" value)
+         ;; Maintain the punctuation and capitalization that is used by
+         ;; the journal in its title.
+         ("pages" (s-join "–" (s-split "[^0-9]+" value t)))
+         (_ value))
+      "")))
+
+(defun bibtex-completion-bkc-format-authors (value)
+  (cl-loop for a in (s-split " and " value t)
+           if (s-index-of "{" a)
+             collect
+             (replace-regexp-in-string "[{}]" "" a)
+             into authors
+           else if (s-index-of "," a)
+             collect
+             (let ((p (s-split " *, *" a t)))
+               (concat
+                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                  (s-split " " (cadr p)))) " "
+		(car p)))
+             into authors
+           else
+             collect
+             (let ((p (s-split " " a t)))
+               (concat
+                (-last-item p) ", "
+                (s-join " " (-map (lambda (it) (concat (s-left 1 it) "."))
+                                  (-butlast p)))))
+             into authors
+           finally return
+             (let ((l (length authors)))
+               (cond
+                 ((= l 1) (car authors))
+                 ((< l 15) (concat (s-join ", " (-butlast authors))
+                                  ", & " (-last-item authors)))
+                 (t (concat (s-join ", " (-slice authors 1 15)) ", …"))))))
+
+(helm-bibtex-helmify-action bibtex-completion-insert-bkc-reference helm-bibtex-insert-bkc-reference)
+(helm-add-action-to-source
+ "Add reference for Github publications" `helm-bibtex-insert-bkc-reference
+ helm-source-bibtex 0)
