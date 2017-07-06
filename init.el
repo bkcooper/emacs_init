@@ -224,15 +224,15 @@ publication specified by KEY."
     (ref (pcase (downcase (bibtex-completion-get-value "=type=" entry))
            ("article"
             (s-format
-	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${journal}, <b>${volume}</b>, ${pages} (${year}). doi:${doi}.\"> </a>"	     
+	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${journal}, <b>${volume}</b>, ${pages} (${year}). doi:${doi}.\"> </a>"
              'bibtex-completion-bkc-get-value entry))
            ("inproceedings"
             (s-format
-	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${booktitle}, ${pages} (${year}). doi:${doi}.\"> </a>"	     
+	     "<a class=\"citation\" href=\"https://doi.org/${doi}\" title=\"${title}. ${author}. ${booktitle}, ${pages} (${year}). doi:${doi}.\"> </a>"
              'bibtex-completion-bkc-get-value entry))
            ("book"
             (s-format
-	     "<a class=\"citation\" href=\"http://\" title=\"${title}. ${author}. ${publisher} (${year}). ISBN: ${isbn}.\"> </a>"	     	     
+	     "<a class=\"citation\" href=\"http://\" title=\"<i>${title}</i>. ${author}. ${publisher} (${year}). ISBN: ${isbn}.\"> </a>"
              'bibtex-completion-bkc-get-value entry))
            ("phdthesis"
             (s-format
@@ -322,7 +322,7 @@ guidelines.  Return DEFAULT if FIELD is not present in ENTRY."
                (cond
                  ((= l 1) (car authors))
                  ((< l 15) (concat (s-join ", " (-butlast authors))
-                                  ", & " (-last-item authors)))
+                                  ", and " (-last-item authors)))
                  (t (concat (s-join ", " (-slice authors 1 15)) ", …"))))))
 
 (helm-bibtex-helmify-action bibtex-completion-insert-bkc-reference helm-bibtex-insert-bkc-reference)
