@@ -100,8 +100,7 @@
 
 (helm-mode 1)
 (setq helm-ag-insert-at-point 'symbol)
-(setq bibtex-completion-bibliography '("/Users/bencooper/google_drive/Papers/bkc_references.bib"
-				       "/Users/bencooper/google_drive/Papers/test.bib"))
+(setq bibtex-completion-bibliography '("/Users/bencooper/google_drive/Papers/bkc_full_references.bib"))
 
 ;;LaTeX configuration
 (setq latex-run-command "pdflatex")
@@ -155,10 +154,10 @@
 ;; flycheck with clang
 (setq c-default-style "python"
       c-basic-offset 4)
-(add-hook 'c-mode-hook 'flycheck-mode)
+(add-hook 'c-mode-common-hook 'flycheck-mode)
 (defun set-checker-to-clang ()
   (setq flycheck-checker 'c/c++-clang))
-(add-hook 'c-mode-hook 'set-checker-to-clang)
+(add-hook 'c-mode-common-hook 'set-checker-to-clang)
 
 ;; Julia configuration
 (eval-after-load 'julia-mode
@@ -204,6 +203,7 @@
 		       (local-set-key (kbd "C-c RET") #'wrap-p-tag)
 		       (local-set-key (kbd "C-c f") #'insert-andy-figure-template)
 		       (local-set-key (kbd "C-c r") #'helm-bibtex))))
+(add-hook 'html-mode-hook (lambda () (electric-indent-local-mode -1)))
 
 ;; custom reference format for helm-bibtex
 ;; if you run into problems here, require 's, possibly 'cl-lib
@@ -322,7 +322,7 @@ guidelines.  Return DEFAULT if FIELD is not present in ENTRY."
                (cond
                  ((= l 1) (car authors))
                  ((< l 15) (concat (s-join ", " (-butlast authors))
-                                  ", and " (-last-item authors)))
+                                  ", &amp; " (-last-item authors)))
                  (t (concat (s-join ", " (-slice authors 1 15)) ", …"))))))
 
 (helm-bibtex-helmify-action bibtex-completion-insert-bkc-reference helm-bibtex-insert-bkc-reference)
