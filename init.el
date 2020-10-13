@@ -113,14 +113,14 @@
 
 ; virtualenvwrapper
 (require 'virtualenvwrapper)
-(setq venv-location "~/miniconda/envs")
+(setq venv-location "~/miniconda3/envs")
 (venv-workon) ; prompts for venv when starting emacs
 
 ;; Jedi
 (setq jedi:complete-on-dot t)
 (setq jedi:use-shortcuts t)
 ; install jediepcserver.py in bin directory of each conda env
-(setq jedi:server-command '("jediepcserver.py"))
+(setq jedi:server-command '("python" "/Users/bencooper/.emacs.d/elpa/jedi-core-20191011.1750/jediepcserver.py"))
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
 (defun venv-restart-jedi-server ()
