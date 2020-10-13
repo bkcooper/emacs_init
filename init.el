@@ -5,7 +5,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default))))
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(package-selected-packages
+   (quote
+    (pcre2el virtualenvwrapper solarized-theme smart-mode-line magit julia-mode jedi helm-projectile helm-bibtex helm-ag flycheck exec-path-from-shell cython-mode)))
+ '(safe-local-variable-values (quote ((flycheck-clang-ms-extensions . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -40,6 +44,7 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 (global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x c") 'comment-or-uncomment-region)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -152,12 +157,14 @@
 ;;; C configuration
 
 ;; flycheck with clang
-(setq c-default-style "python"
-      c-basic-offset 4)
-(add-hook 'c-mode-common-hook 'flycheck-mode)
-(defun set-checker-to-clang ()
-  (setq flycheck-checker 'c/c++-clang))
-(add-hook 'c-mode-common-hook 'set-checker-to-clang)
+;; This is mostly useless at the moment for Micro-Manager/PCO work because
+;; I don't have the Windows defines.
+(setq c-default-style "bsd"
+      c-basic-offset 2)
+;;(add-hook 'c-mode-common-hook 'flycheck-mode)
+;;(defun set-checker-to-clang ()
+;;  (setq flycheck-checker 'c/c++-clang))
+;;(add-hook 'c-mode-common-hook 'set-checker-to-clang)
 
 ;; Julia configuration
 (eval-after-load 'julia-mode
